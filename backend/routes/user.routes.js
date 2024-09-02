@@ -20,7 +20,7 @@ userRoute.get('/', async(req, res)=>{
 });
 
 userRoute.post('/register', async(req, res)=>{
-     const {email, username, password, phone, profession} = req.body;
+     const { username, email, password, phone, profession} = req.body;
      try {
          const newUser = await UserModel.findOne({email});
          if(newUser){ 
@@ -37,7 +37,7 @@ userRoute.post('/register', async(req, res)=>{
                         phone,
                         profession
                     });
-                     await new saveUser.save();
+                     await saveUser.save();
                      res.status(200).json({"new user registered" : saveUser})
                 }
              })
@@ -58,8 +58,10 @@ userRoute.post('/login', async(req, res)=>{
                 if(result){
                     const token = jwt.sign({userID : existingUser._id}, process.env.JWT_SECRET);
                     res.send({msg: "login successful", token});
+                    console.log("sucesss");
                 } else if(err){
                     res.send({msg: "wrong credentials", err});
+                    console.log("falure");
                 }
             })
           }

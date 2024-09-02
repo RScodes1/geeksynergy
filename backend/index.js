@@ -8,11 +8,13 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
-app.use("users", userRoute);
+
 app.use(cors());
 
+app.use("/users", userRoute);
+
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/profile.html'));
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 app.listen(process.env.port, async()=>{
