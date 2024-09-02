@@ -9,71 +9,59 @@
     <title>User Login</title>
 </head>
 <body>
-    
     <div class="container mt-5">
-        <h1 class="mb-4">All Users</h1>
-        <div id="userList" class="list-group">
-            <!-- Details of all users will be populated here -->
-        </div>
+        <h1 class="mb-4">Login</h1>
+        <form id="loginForm">
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
+                <label for="floatingEmail">Email Address</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                <label for="floatingPassword">Password</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
     </div>
 
     <script>
-        async function fetchUsers() {
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+          
+            const email = document.getElementById('floatingEmail').value;
+            const password = document.getElementById('floatingPassword').value;
+
+         
+            if (!email || !password) {
+                alert('Please fill in both fields.');
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:8800/users', {
-                    method: 'GET',
+                // Send login request
+                const response = await fetch('http://localhost:8800/users/login', {
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        // Add authorization header if required
-                        // 'Authorization': Bearer ${token},
+                        'Content-Type': 'application/json'
                     },
+                    body: JSON.stringify({ email, password })
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch users');
+                    throw new Error('Login failed');
                 }
 
-                const users = await response.json();
-                console.log("idigo", users);
-                const userList = document.getElementById('userList');
-               
-                users.userDetail.forEach(user => {
-                    const userItem = document.createElement('div');
-                    userItem.className = "list-group-item";
-                    userItem.innerHTML = `
-                        <h5 class="mb-1">${user.username}</h5>
-                        <p class="mb-1">Email: ${user.email}</p>
-                        <small>Phone: ${user.phone}</small><br>
-                        <small>Profession: ${user.profession}</small>
-                        <div class="mt-3">
-                            <button class="btn btn-primary btn-sm" onclick="updateUser('${user.id}')">Update</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${user.id}')">Delete</button>
-                        </div>
-                    `;
-                    userList.appendChild(userItem);
-                });
+                const result = await response.json();
+                console.log('Login successful:', result);
+
+                // Redirect to another page or show success message
+                window.location.href = './index.html'; 
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while fetching user details.');
-                 window.location.href = './register.html';
+                alert('Login failed. Please check your credentials and try again.');
             }
-        }
-
-        function updateUser(userId) {
-         
-            alert(`Update user with ID: ${userId}`);
-         
-        }
-
-        function deleteUser(userId) {
-            if (confirm('Are you sure you want to delete this user?')) {
-               
-                alert(`Delete user with ID: ${userId}`);
-              
-            }
-        }
-
-        fetchUsers();
+        });
     </script>
 </body>
 </html>
